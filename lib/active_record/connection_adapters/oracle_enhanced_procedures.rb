@@ -124,10 +124,11 @@ module ActiveRecord #:nodoc:
           # check if class has custom create method
           return update_without_custom_method unless self.class.custom_update_method
           return 0 if attribute_names.empty?
+          result = false
           self.class.connection.log_custom_method("custom update method with #{self.class.primary_key}=#{self.id}", "#{self.class.name} Update") do
-            self.class.custom_update_method.bind(self).call
+            result = self.class.custom_update_method.bind(self).call
           end
-          1
+          result != false
         end
 
         # Deletes the record in the database with custom delete method
